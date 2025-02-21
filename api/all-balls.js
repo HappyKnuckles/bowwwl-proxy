@@ -1,7 +1,19 @@
 // api/loadAllBalls.js
 export default async function handler(req, res) {
   const apiUrl = 'https://bowwwl.com/restapi/balls?_format=json';
+  console.log('recevied request for all balls');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET,OPTIONS,PATCH,DELETE,POST,PUT'
+  );
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
   try {
     // Forward the request to the external API
     const response = await fetch(apiUrl);
