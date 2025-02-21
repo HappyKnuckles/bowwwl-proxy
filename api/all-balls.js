@@ -1,7 +1,7 @@
 // api/loadAllBalls.js
 export default async function handler(req, res) {
   const apiUrl = 'https://bowwwl.com/restapi/balls?_format=json';
-  console.log('recevied request for all balls');
+  
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Methods',
