@@ -1,0 +1,16 @@
+{
+  "name": "bowwwl-proxy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@vercel/node": "^5.1.8",
+    "axios": "^1.7.9"
+  }
+}
