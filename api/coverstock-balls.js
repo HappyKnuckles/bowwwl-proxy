@@ -2,8 +2,7 @@
 export default async function handler(req, res) {
   const { coverstock, ballId } = req.query; // Extract the coverstock parameter from the request query
   const apiUrl = `https://bowwwl.com/restapi/balls/v2?coverstock=${coverstock}`;
-  console.log(coverstock)
-  console.log(ballId)
+  
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Methods',
@@ -24,6 +23,8 @@ export default async function handler(req, res) {
     }
 
     const coverstockBalls = await response.json();
+    const ballExists = coverstockBalls.some((coverstockBall) => coverstockBall.ball_id === ballId);
+    console.log(`Ball ID ${ballId} exists in the array:`, ballExists);
     coverstockBalls.filter((coverstockBall) => coverstockBall.ball_id !== ballId);
 
     res.status(200).json(coverstockBalls);
