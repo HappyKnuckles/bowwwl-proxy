@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       throw new Error('Failed to fetch core balls');
     }
 
-    const coreBalls = await response.json();
+    let coreBalls = await response.json();
     coreBalls = coreBalls.filter((coreBall) => coreBall.ball_id !== ballId);
 
     res.status(200).json(coreBalls);

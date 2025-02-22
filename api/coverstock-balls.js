@@ -22,9 +22,9 @@ export default async function handler(req, res) {
       throw new Error('Failed to fetch coverstock balls');
     }
 
-    const coverstockBalls = await response.json();
+    let coverstockBalls = await response.json();
     coverstockBalls = coverstockBalls.filter((coverstockBall) => coverstockBall.ball_id !== ballId);
-    
+
     res.status(200).json(coverstockBalls);
   } catch (error) {
     console.error('Error fetching coverstock balls:', error);
