@@ -23,8 +23,8 @@ export default async function handler(req, res) {
     }
 
     const coreBalls = await response.json();
-    coreBalls.filter((coreBall) => coreBall.ball_id !== ballId);
-    
+    coreBalls = coreBalls.filter((coreBall) => coreBall.ball_id !== ballId);
+
     res.status(200).json(coreBalls);
   } catch (error) {
     console.error('Error fetching core balls:', error);
