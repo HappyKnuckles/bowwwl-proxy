@@ -3,7 +3,7 @@ export function withCors(handler) {
   return async (req, res) => {
     const allowedOrigins = [
       'https://lightningbowl.de',
-      'http://localhost:8000',
+      'http://localhost:8100',
       'https://*.vercel.app',
     ];
 
