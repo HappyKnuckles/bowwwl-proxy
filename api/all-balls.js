@@ -2,7 +2,6 @@
 export default async function handler(req, res) {
   const baseUrl = 'https://bowwwl.com/restapi/balls?_format=json';
 
-  // Baue die URL dynamisch auf, wenn optionale Parameter vorhanden sind
   let apiUrl = baseUrl;
   if (req.query.updated) {
     apiUrl += `&updated=${encodeURIComponent(req.query.updated)}`;
@@ -11,21 +10,7 @@ export default async function handler(req, res) {
     apiUrl += `&weight=${encodeURIComponent(req.query.weight)}`;
   }
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET,OPTIONS,PATCH,DELETE,POST,PUT'
-  );
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight request
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
   try {
-    // Weiterleiten der Anfrage an die externe API
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
@@ -34,15 +19,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Sortiere die Daten basierend auf release_date absteigend
     const sortedBalls = data.sort(
       (a, b) => new Date(b.release_date) - new Date(a.release_date)
     );
 
-    // Rückgabe der sortierten Daten als JSON
     res.status(200).json(sortedBalls);
   } catch (error) {
-    console.error('Error fetching all balls:', error);
     res.status(500).json({ error: 'Failed to load all balls' });
   }
 }
