@@ -1,5 +1,7 @@
 // api/loadAllCores.js
-export default async function handler(req, res) {
+import { withCors } from '../middleware.js';
+
+async function handler(req, res) {
   const apiUrl = 'https://bowwwl.com/restapi/cores';
 
   try {
@@ -16,3 +18,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to load all cores' });
   }
 }
+
+export default withCors(handler);

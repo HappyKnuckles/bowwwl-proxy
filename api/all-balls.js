@@ -1,5 +1,7 @@
 // api/loadAllBalls.js
-export default async function handler(req, res) {
+import { withCors } from '../middleware.js';
+
+async function handler(req, res) {
   const baseUrl = 'https://bowwwl.com/restapi/balls?_format=json';
 
   let apiUrl = baseUrl;
@@ -28,3 +30,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to load all balls' });
   }
 }
+
+export default withCors(handler);

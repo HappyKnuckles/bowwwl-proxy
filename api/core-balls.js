@@ -1,5 +1,7 @@
 // api/getSameCoreBalls.js
-export default async function handler(req, res) {
+import { withCors } from '../middleware.js';
+
+async function handler(req, res) {
   const { core, ballId } = req.query; // Extract the core parameter from the request query
   const apiUrl = `https://bowwwl.com/restapi/balls/v2?core=${core}`;
 
@@ -18,3 +20,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to fetch core balls' });
   }
 }
+
+export default withCors(handler);

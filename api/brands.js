@@ -1,5 +1,7 @@
 // api/loadAllBrands.js
-export default async function handler(req, res) {
+import { withCors } from '../middleware.js';
+
+async function handler(req, res) {
   const apiUrl = 'https://bowwwl.com/restapi/brands';
 
   try {
@@ -16,3 +18,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to load all brands' });
   }
 }
+
+export default withCors(handler);
