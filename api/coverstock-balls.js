@@ -1,5 +1,7 @@
 // api/getSameCoverstockBalls.js
-export default async function handler(req, res) {
+import { withCors } from '../middleware.js';
+
+async function handler(req, res) {
   const { coverstock, ballId } = req.query;
   const apiUrl = `https://bowwwl.com/restapi/balls/v2?coverstock=${coverstock}`;
 
@@ -18,3 +20,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to fetch coverstock balls' });
   }
 }
+
+export default withCors(handler);
