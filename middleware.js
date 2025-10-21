@@ -5,6 +5,7 @@ export function withCors(handler) {
       'https://lightningbowl.de',
       'http://localhost:8100',
       'https://*.vercel.app',
+      'http://192.168.178.85:8100/',
     ];
 
     const origin = req.headers.origin;
