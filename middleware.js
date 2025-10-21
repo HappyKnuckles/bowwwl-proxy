@@ -4,18 +4,22 @@ export function withCors(handler) {
     const allowedOrigins = [
       'https://lightningbowl.de',
       'http://localhost:8100',
-      'https://*.vercel.app',
       'http://192.168.178.85:8100',
     ];
 
+    const vercelRegex = /^https:\/\/([a-zA-Z0-9\-]+)\.vercel\.app$/;
+
     const origin = req.headers.origin;
 
-    if (allowedOrigins.includes(origin) || !origin) {
+    // Check if origin is allowed or matches Vercel preview deployments
+    if (
+      allowedOrigins.includes(origin) ||
+      (origin && vercelRegex.test(origin)) ||
+      origin === 'null' ||
+      !origin
+    ) {
       res.setHeader('Access-Control-Allow-Origin', origin || '*');
-      res.setHeader(
-        'Access-Control-Allow-Methods',
-        'GET,POST,PUT,DELETE,OPTIONS'
-      );
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       res.setHeader('Access-Control-Allow-Credentials', 'true');
     }
