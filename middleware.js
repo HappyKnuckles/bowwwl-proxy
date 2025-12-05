@@ -3,6 +3,7 @@ export function withCors(handler) {
   return async (req, res) => {
     const allowedOrigins = [
       'https://lightningbowl.de',
+      'https://test.lightningbowl.de',
       'http://localhost:8100',
       'http://192.168.178.85:8100',
     ];
