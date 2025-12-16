@@ -4,18 +4,10 @@ export function withCors(handler) {
     const allowedOrigins = [
       'https://lightningbowl.de',
       'https://test.lightningbowl.de',
-      ...(
-      req.headers.origin &&
-      /^https?:\/\/localhost:\d+$/.test(req.headers.origin)
-        ? [req.headers.origin]
-        : []
-      ),
-      ...(
-      req.headers.origin &&
-      /^https?:\/\/127\.0\.0\.1:\d+$/.test(req.headers.origin)
-        ? [req.headers.origin]
-        : []
-      ),
+      'https://localhost',
+      'http://localhost',
+      'http://localhost:8100',
+      'http://localhost:4200',
     ];
 
     const vercelRegex = /^https:\/\/([a-zA-Z0-9\-]+)\.vercel\.app$/;
