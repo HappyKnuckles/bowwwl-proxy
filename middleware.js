@@ -113,7 +113,7 @@ export function validateInput(value, type = 'string', maxLength = 100) {
   }
 }
 
-// Allowed CORS origins - configurable via CORS_ALLOWED_ORIGINS env variable (comma-separated)
+// Allowed CORS origins - configurable via ALLOWED_ORIGINS env variable (comma-separated)
 const defaultOrigins = [
   'https://lightningbowl.de',
   'https://test.lightningbowl.de',
@@ -122,8 +122,8 @@ const defaultOrigins = [
   'http://192.168.178.85:8100',
 ];
 
-const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
-  ? process.env.CORS_ALLOWED_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
   : defaultOrigins;
 
 // CORS middleware wrapper for Vercel serverless functions
