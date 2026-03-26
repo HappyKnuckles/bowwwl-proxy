@@ -113,6 +113,12 @@ export function validateInput(value, type = 'string', maxLength = 100) {
   }
 }
 
+// Allowed CORS origins - configurable via ALLOWED_ORIGINS env variable (comma-separated)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 // CORS middleware wrapper for Vercel serverless functions
 export function withCors(handler) {
   return async (req, res) => {
@@ -120,14 +126,6 @@ export function withCors(handler) {
     if (!rateLimit(req, res)) {
       return; // Rate limit exceeded, response already sent
     }
-
-    const allowedOrigins = [
-      'https://lightningbowl.de',
-      'https://test.lightningbowl.de',
-      'http://localhost:8100',
-      'http://localhost:4200',
-      'http://192.168.178.85:8100',
-    ];
 
     const vercelRegex = /^https:\/\/([a-zA-Z0-9\-]+)\.vercel\.app$/;
     const localhostRegex = /^http:\/\/localhost:\d+$/;
