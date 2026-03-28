@@ -127,16 +127,10 @@ export function withCors(handler) {
       return; // Rate limit exceeded, response already sent
     }
 
-    const vercelRegex = /^https:\/\/([a-zA-Z0-9\-]+)\.vercel\.app$/;
-    const localhostRegex = /^http:\/\/localhost:\d+$/;
-
     const origin = req.headers.origin;
 
     // More strict CORS - only allow credentials for known origins
-    const isAllowedOrigin =
-      allowedOrigins.includes(origin) ||
-      (origin && vercelRegex.test(origin)) ||
-      (origin && localhostRegex.test(origin));
+    const isAllowedOrigin = allowedOrigins.includes(origin);
 
     if (isAllowedOrigin) {
       res.setHeader('Access-Control-Allow-Origin', origin);
