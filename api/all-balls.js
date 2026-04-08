@@ -2,7 +2,7 @@
 import { withCors, validateInput } from '../middleware.js';
 
 // Whitelist of allowed API endpoints
-const ALLOWED_API_BASE = 'https://bowwwl.com/restapi/balls';
+const ALLOWED_API_BASE = 'https://bowwwl.com/restapi/balls/v2';
 
 async function handler(req, res) {
   let apiUrl = `${ALLOWED_API_BASE}?_format=json`;
