@@ -113,6 +113,16 @@ export function validateInput(value, type = 'string', maxLength = 100) {
   }
 }
 
+// Allowed CORS origins - configurable via ALLOWED_ORIGINS env variable (comma-separated)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+// Fixed regex for Vercel preview deployments of the lightningbowl project
+const vercelPreviewRegex =
+  /^https:\/\/lightningbowl-[a-z0-9]+(?:-[a-z0-9]+)*-nicos-projects-1c3811a7\.vercel\.app$/;
+
 // CORS middleware wrapper for Vercel serverless functions
 export function withCors(handler) {
   return async (req, res) => {
@@ -121,24 +131,12 @@ export function withCors(handler) {
       return; // Rate limit exceeded, response already sent
     }
 
-    const allowedOrigins = [
-      'https://lightningbowl.de',
-      'https://test.lightningbowl.de',
-      'http://localhost:8100',
-      'http://localhost:4200',
-      'http://192.168.178.85:8100',
-    ];
-
-    const vercelRegex = /^https:\/\/([a-zA-Z0-9\-]+)\.vercel\.app$/;
-    const localhostRegex = /^http:\/\/localhost:\d+$/;
-
     const origin = req.headers.origin;
 
-    // More strict CORS - only allow credentials for known origins
+    // More strict CORS - only allow credentials for known origins or Vercel preview deployments
     const isAllowedOrigin =
       allowedOrigins.includes(origin) ||
-      (origin && vercelRegex.test(origin)) ||
-      (origin && localhostRegex.test(origin));
+      (!!origin && vercelPreviewRegex.test(origin));
 
     if (isAllowedOrigin) {
       res.setHeader('Access-Control-Allow-Origin', origin);
