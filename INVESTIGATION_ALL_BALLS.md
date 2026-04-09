@@ -162,13 +162,60 @@ whether undocumented bulk-fetch parameters exist.
 
 ---
 
-## Open Questions
+## Open Questions (Answered)
 
-1. What is the approximate total number of bowling balls in the database?  
-   Knowing this helps estimate memory usage and loop iteration count.
-2. How frequently are balls added/updated?  
-   Determines the acceptable cache TTL.
-3. Is the upstream API likely to add a `total_pages` or `X-WP-TotalPages` response header in
-   future? Many Drupal/WordPress REST APIs include these.
-4. What is the current Vercel plan tier?  
-   Affects the serverless execution time limit and Cron availability.
+1. **What is the approximate total number of bowling balls in the database?**  
+   **~3,000 balls.** Assuming ~50 balls per page this is roughly 60 pages, well within memory
+   limits (~1–2 MB of JSON). Loop iteration count is manageable.
+
+2. **How frequently are balls added/updated?**  
+   **Roughly once a week** when new releases happen, though timing is irregular. A 24-hour TTL
+   is more than adequate to stay current; even a 12-hour TTL would be acceptable.
+
+3. **Is the upstream API likely to add `total_pages` / `X-WP-TotalPages` headers?**  
+   **Unknown.** We cannot rely on this, so the "loop until empty page" sentinel approach is
+   the right choice.
+
+4. **What is the current Vercel plan tier?**  
+   **Free (Hobby).** This has two critical implications:
+   - Serverless function execution time is capped at **10 seconds**.
+   - Cron Jobs are effectively unavailable (Hobby allows at most 1 cron per day, which is
+     not useful for cache warming).
+
+---
+
+## Decision (based on answered questions)
+
+The Free/Hobby plan rules out Option 3 (scheduled cron) as a practical short-term solution.
+Option 2 (in-memory cache) is still the right approach, but the **sequential** loop shown
+in the Option 2 pseudocode above is **not safe** on the free tier:
+
+- 60 pages × ~200 ms/page = ~12 seconds → exceeds the 10-second limit.
+
+The fix is to fetch pages in **parallel batches** rather than sequentially:
+
+```
+// Fetch 10 pages concurrently per batch
+const BATCH_SIZE = 10;
+let startPage = 0;
+while (true) {
+  const pageNums = Array.from({ length: BATCH_SIZE }, (_, i) => startPage + i);
+  const results = await Promise.all(pageNums.map(fetchPage));
+  let done = false;
+  for (const pageData of results) {
+    if (pageData.length === 0) { done = true; break; }
+    all.push(...pageData);
+  }
+  if (done) break;
+  startPage += BATCH_SIZE;
+}
+```
+
+With 10 pages fetched concurrently, 60 pages take only ~6 batches × ~200 ms = **~1–2 seconds**
+total, comfortably within the 10-second limit. Requests after the first warm-up return from
+the in-memory cache in milliseconds.
+
+**Cache TTL**: 24 hours. Given weekly releases, data will almost never be more than one day
+stale, and cache will typically be refreshed long before the next release.
+
+**Implementation**: see `api/all-balls.js`.
