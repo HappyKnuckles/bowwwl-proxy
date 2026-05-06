@@ -100,7 +100,7 @@ export function validateInput(value, type = 'string', maxLength = 100) {
 
     case 'url-safe':
       // For query parameters that will be URL encoded
-      if (!/^[a-zA-Z0-9\s\-_.~%]+$/.test(strValue)) {
+      if (!/^[a-zA-Z0-9\s\-_.~%()+]+$/.test(strValue)) {
         return { valid: false, error: 'Invalid characters detected' };
       }
       return { valid: true, value: strValue };
