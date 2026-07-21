@@ -107,9 +107,13 @@ export function validateInput(value, type = 'string', maxLength = 100) {
 
     case 'string':
     default:
-      // Basic XSS prevention - remove potential script tags
-      const sanitized = strValue.replace(/<script[^>]*>.*?<\/script>/gi, '');
-      return { valid: true, value: sanitized };
+      // Reject HTML-significant characters rather than trying to strip tags.
+      // Regex-based tag filtering is circumventable (e.g. `</script >`, split
+      // or nested tags) and stripping can re-expose the payload it removed.
+      if (/[<>"'`&]/.test(strValue)) {
+        return { valid: false, error: 'Invalid characters detected' };
+      }
+      return { valid: true, value: strValue };
   }
 }
 
